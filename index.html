@@ -247,9 +247,9 @@ body::before {
   justify-content: center;
   transition: transform .12s, box-shadow .12s;
   position: relative;
-  padding: 8px 10px;
-  min-width: 58px;
-  min-height: 58px;
+  padding: 6px 8px 5px;
+  width: 62px;
+  height: 66px;
   flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -261,13 +261,32 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
+}
+
+/* Beat count number shown below the music symbol */
+.beat-count {
+  display: block;
+  font-size: 13px;
+  font-weight: 900;
+  color: white;
+  line-height: 1;
+  margin-top: 2px;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: 0;
+}
+
+/* dotted-half button has dark text, override beat-count color */
+.nb-dotted-half .beat-count {
+  color: #5A4700;
 }
 
 .note-icon {
   width: 34px;
   height: 34px;
   display: block;
-  color: currentColor;
+  color: #1A1A1A; /* Always dark/black — not inherited from button color */
 }
 
 .note-icon svg {
@@ -277,33 +296,65 @@ body::before {
   overflow: visible;
 }
 
-.nb-whole       { background: #FF6B9D; color: white; box-shadow: 0 4px 0 #C94578; }
-.nb-half        { background: #FF9F43; color: white; box-shadow: 0 4px 0 #C87320; }
-.nb-dotted-half { background: #FFD93D; color: #6B5600; box-shadow: 0 4px 0 #C8A800; }
+/* Force icon color to black on ALL colored note buttons */
+.note-btn .note-icon,
+.note-btn .sym .note-icon {
+  color: #1A1A1A !important;
+}
+
+/* Rest buttons: slightly softer dark for grey background */
+.nb-rest-h .note-icon,
+.nb-rest-q .note-icon,
+.nb-rest-e .note-icon {
+  color: #2A2A2A !important;
+}
+
+/* Whole note & half note inner holes must match their button background */
+.nb-whole       { background: #FF6B9D; color: white; box-shadow: 0 4px 0 #C94578; --notebg: #FF6B9D; }
+.nb-half        { background: #FF9F43; color: white; box-shadow: 0 4px 0 #C87320; --notebg: #FF9F43; }
+.nb-dotted-half { background: #FFD93D; color: #6B5600; box-shadow: 0 4px 0 #C8A800; --notebg: #FFD93D; }
 .nb-quarter     { background: #6BCB77; color: white; box-shadow: 0 4px 0 #3A9445; }
 .nb-dotq        { background: #4D96FF; color: white; box-shadow: 0 4px 0 #1A63CC; }
-.nb-eighth      { background: #C77DFF; color: white; box-shadow: 0 4px 0 #8F3FCC; }
+.nb-eighth      { background: #9B4DCA; color: white; box-shadow: 0 4px 0 #6A1E99; }
 .nb-rest-h      { background: #C8C8C8; color: #444;  box-shadow: 0 4px 0 #999; }
 .nb-rest-q      { background: #B8B8B8; color: #444;  box-shadow: 0 4px 0 #888; }
 .nb-rest-e      { background: #A8A8A8; color: #444;  box-shadow: 0 4px 0 #777; }
-.nb-eighth-front { background: #9B4DCA; color: white; box-shadow: 0 4px 0 #6A1E99; }
-.nb-eighth-mid   { background: #7C3AED; color: white; box-shadow: 0 4px 0 #5B21B6; }
-.nb-eighth-back  { background: #A855F7; color: white; box-shadow: 0 4px 0 #7E22CE; }
+.nb-eighth-front { background: #00B4D8; color: white; box-shadow: 0 4px 0 #0077A8; }
+.nb-eighth-mid   { background: #52B788; color: white; box-shadow: 0 4px 0 #2D7A58; }
+.nb-eighth-back  { background: #F4845F; color: white; box-shadow: 0 4px 0 #C45530; }
 
-/* Small label for quaver variant buttons */
-.nb-eighth-front::after { content: 'depan'; }
-.nb-eighth-mid::after   { content: 'tengah'; }
-.nb-eighth-back::after  { content: 'belakang'; }
-.nb-eighth-front::after,
-.nb-eighth-mid::after,
-.nb-eighth-back::after {
+/* The inner "hole" ellipses of whole/half noteheads use the button's own bg color */
+.nb-whole .notehead-hole,
+.nb-half .notehead-hole,
+.nb-dotted-half .notehead-hole { fill: var(--notebg, white); }
+
+/* In output cells, hole color = white (cells have light tinted bg) */
+.note-cell .notehead-hole { fill: white; }
+
+/* quaver variant label colors — beat-count CSS handles the text */
+.nb-eighth-front .beat-count,
+.nb-eighth-mid .beat-count,
+.nb-eighth-back .beat-count {
+  color: rgba(255,255,255,0.92);
+}
+
+.nb-eighth-front .note-icon,
+.nb-eighth-mid .note-icon,
+.nb-eighth-back .note-icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* Position sub-label (depan/tengah/blkg) under quaver variants */
+.pos-label {
   display: block;
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 800;
-  color: rgba(255,255,255,0.85);
-  text-align: center;
-  margin-top: 2px;
+  color: rgba(255,255,255,0.80);
   line-height: 1;
+  margin-top: 1px;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
   letter-spacing: 0.02em;
 }
 
@@ -754,96 +805,170 @@ function getPianoIconMarkup() {
 ============================================================ */
 const noteColor = {
   whole:'#FF6B9D', half:'#FF9F43', dotted_half:'#FFD93D',
-  quarter:'#6BCB77', dotted_quarter:'#4D96FF', eighth:'#C77DFF',
-  eighth_front:'#9B4DCA', eighth_mid:'#7C3AED', eighth_back:'#A855F7',
+  quarter:'#6BCB77', dotted_quarter:'#4D96FF', eighth:'#9B4DCA',
+  eighth_front:'#00B4D8', eighth_mid:'#52B788', eighth_back:'#F4845F',
   rest_h:'#C8C8C8', rest_q:'#B8B8B8', rest_e:'#A8A8A8'
 };
 function getNoteIconMarkup(type, extraClass = '') {
   const cls = extraClass ? `note-icon ${extraClass}` : 'note-icon';
+
+  // All SVG paths below are carefully modeled after standard music engraving
+  // conventions (SMuFL / Bravura reference), drawn in a 100×140 viewBox for
+  // consistent proportions, then scaled by the CSS .note-icon size.
+
   const icons = {
-    // ── NOTES (all filled/stroked black, no white fill on notes) ──
-    whole: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="32" cy="40" rx="16" ry="11" transform="rotate(-15 32 40)" fill="none" stroke="currentColor" stroke-width="5"/>
-      <ellipse cx="32" cy="40" rx="8" ry="5" transform="rotate(-15 32 40)" fill="currentColor"/>
+
+    // ── WHOLE NOTE (semibreve) ────────────────────────────────────────────────
+    // Hollow oval tilted ~-15°, thick outer ring, open centre hole
+    whole: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="44" rx="30" ry="18" transform="rotate(-12 50 44)"
+               fill="currentColor"/>
+      <ellipse cx="50" cy="44" rx="16" ry="8"  transform="rotate(-12 50 44)"
+               class="notehead-hole" fill="white"/>
     </svg></span>`,
 
-    half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="26" cy="44" rx="14" ry="9" transform="rotate(-18 26 44)" stroke="currentColor" stroke-width="4.5" fill="none"/>
-      <path d="M37 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    // ── HALF NOTE (minim) ─────────────────────────────────────────────────────
+    // Hollow oval notehead + stem up on right
+    half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="42" cy="120" rx="28" ry="18" transform="rotate(-18 42 120)"
+               fill="currentColor"/>
+      <ellipse cx="42" cy="120" rx="16" ry="9"  transform="rotate(-18 42 120)"
+               class="notehead-hole" fill="white"/>
+      <rect x="67" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
     </svg></span>`,
 
-    dotted_half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="22" cy="44" rx="14" ry="9" transform="rotate(-18 22 44)" stroke="currentColor" stroke-width="4.5" fill="none"/>
-      <path d="M33 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <circle cx="49" cy="40" r="4" fill="currentColor"/>
+    // ── DOTTED HALF NOTE ──────────────────────────────────────────────────────
+    dotted_half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="120" rx="28" ry="18" transform="rotate(-18 40 120)"
+               fill="currentColor"/>
+      <ellipse cx="40" cy="120" rx="16" ry="9"  transform="rotate(-18 40 120)"
+               class="notehead-hole" fill="white"/>
+      <rect x="65" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
+      <circle cx="100" cy="116" r="7" fill="currentColor"/>
     </svg></span>`,
 
-    quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="26" cy="44" rx="14" ry="9" transform="rotate(-18 26 44)" fill="currentColor"/>
-      <path d="M37 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    // ── QUARTER NOTE (crotchet) ───────────────────────────────────────────────
+    // Solid oval notehead + stem up
+    quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="42" cy="120" rx="28" ry="18" transform="rotate(-18 42 120)"
+               fill="currentColor"/>
+      <rect x="67" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
     </svg></span>`,
 
-    dotted_quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="22" cy="44" rx="14" ry="9" transform="rotate(-18 22 44)" fill="currentColor"/>
-      <path d="M33 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <circle cx="49" cy="40" r="4" fill="currentColor"/>
+    // ── DOTTED QUARTER NOTE ───────────────────────────────────────────────────
+    dotted_quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="120" rx="28" ry="18" transform="rotate(-18 40 120)"
+               fill="currentColor"/>
+      <rect x="65" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
+      <circle cx="100" cy="116" r="7" fill="currentColor"/>
     </svg></span>`,
 
-    eighth: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="24" cy="44" rx="14" ry="9" transform="rotate(-18 24 44)" fill="currentColor"/>
-      <path d="M35 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <path d="M35 10 C43 13 48 20 46 30 C41 27 37 27 35 30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    // ── EIGHTH NOTE (quaver) — single, with flag ──────────────────────────────
+    // Solid notehead + stem + elegant curved flag
+    eighth: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="122" rx="27" ry="17" transform="rotate(-18 40 122)"
+               fill="currentColor"/>
+      <rect x="64" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
+      <!-- flag: starts at top of stem, curves down-right like a real quaver flag -->
+      <path d="M67 22 C90 35 95 55 78 75 C72 82 66 84 64 88
+               C72 74 78 60 70 42 C66 33 67 27 67 22 Z"
+            fill="currentColor"/>
     </svg></span>`,
 
-    // quaver depan: notehead kiri, beam pendek memanjang ke kanan
-    eighth_front: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="20" cy="44" rx="14" ry="9" transform="rotate(-18 20 44)" fill="currentColor"/>
-      <path d="M31 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <path d="M31 8 L52 8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    // ── QUAVER POSISI DEPAN (beam left-hanging → note is FIRST in group) ─────
+    // Notehead + stem + horizontal beam extending RIGHT from stem top
+    eighth_front: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 110 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="122" rx="27" ry="17" transform="rotate(-18 40 122)"
+               fill="currentColor"/>
+      <rect x="64" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
+      <!-- beam extending right from stem top -->
+      <rect x="64" y="20" width="46" height="10" rx="3" fill="currentColor"/>
     </svg></span>`,
 
-    // quaver tengah: notehead center, beam pendek ke kiri dan kanan
-    eighth_mid: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="24" cy="44" rx="14" ry="9" transform="rotate(-18 24 44)" fill="currentColor"/>
-      <path d="M35 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <path d="M14 8 L56 8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    // ── QUAVER POSISI TENGAH (beams both sides → note is MIDDLE in group) ────
+    eighth_mid: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="122" rx="27" ry="17" transform="rotate(-18 50 122)"
+               fill="currentColor"/>
+      <rect x="74" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
+      <!-- beam extending left AND right -->
+      <rect x="20" y="20" width="90" height="10" rx="3" fill="currentColor"/>
     </svg></span>`,
 
-    // quaver belakang: notehead kanan, beam pendek memanjang ke kiri
-    eighth_back: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <ellipse cx="30" cy="44" rx="14" ry="9" transform="rotate(-18 30 44)" fill="currentColor"/>
-      <path d="M41 42V8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <path d="M12 8 L41 8" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    // ── QUAVER POSISI BELAKANG (beam right-hanging → note is LAST in group) ──
+    eighth_back: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 110 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="52" cy="122" rx="27" ry="17" transform="rotate(-18 52 122)"
+               fill="currentColor"/>
+      <rect x="76" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
+      <!-- beam extending left from stem top -->
+      <rect x="20" y="20" width="56" height="10" rx="3" fill="currentColor"/>
     </svg></span>`,
 
-    // ── RESTS (standard music notation symbols) ──
-    // Minim rest: filled rectangle sitting ON a line (like a hat)
-    rest_h: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <rect x="16" y="28" width="32" height="12" rx="1" fill="currentColor"/>
-      <path d="M13 28 H51" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    // ── HALF REST (minim rest) ────────────────────────────────────────────────
+    // Solid black rectangle sitting ON TOP of a staff line (like a hat brim up)
+    rest_h: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="22" width="76" height="24" rx="2" fill="currentColor"/>
+      <rect x="8"  y="46" width="84" height="5"  rx="2" fill="currentColor"/>
     </svg></span>`,
 
-    // Crotchet rest: standard squiggly crotchet rest shape
-    rest_q: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <path d="M36 10 C44 14 44 20 35 24 C30 27 29 31 32 36 C35 41 33 46 26 52"
-        stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <path d="M26 52 C30 47 36 47 39 52"
-        stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    // ── QUARTER REST (crotchet rest) ──────────────────────────────────────────
+    // The classic filled squiggle/zigzag — modeled precisely after engraving standard:
+    // tapers at top, widens into a diamond, narrows again, ends with a C-shaped hook
+    rest_q: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 80 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="
+        M46 8
+        C52 8  58 14 54 22
+        C51 28 44 30 40 34
+        C50 36 62 44 58 56
+        C55 64 46 67 42 71
+        C48 75 54 83 50 93
+        C46 103 34 110 24 106
+        C16 103 14 95 18 89
+        C22 84 30 85 33 91
+        C35 96 40 97 43 93
+        C46 89 43 82 38 77
+        C30 70 24 60 28 50
+        C31 41 42 38 48 34
+        C40 30 30 24 33 14
+        C36 6  42 6  46 8 Z
+      " fill="currentColor"/>
     </svg></span>`,
 
-    // Quaver rest: circle with diagonal stem and curved tail
-    rest_e: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none">
-      <circle cx="40" cy="18" r="6" fill="currentColor"/>
-      <path d="M43 22 L24 50" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-      <path d="M24 50 C30 44 38 45 42 50" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    // ── EIGHTH REST (quaver rest) ─────────────────────────────────────────────
+    // Filled circle (flag-ball) at top, diagonal thick stem going down-right,
+    // with a small curved hook/foot — standard engraving shape
+    rest_e: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 80 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- filled ball at top-left -->
+      <circle cx="28" cy="30" r="16" fill="currentColor"/>
+      <!-- diagonal stem: thick line from ball area down to bottom-right -->
+      <path d="M38 20 L62 138" stroke="currentColor" stroke-width="10"
+            stroke-linecap="round"/>
+      <!-- curved hook/foot at bottom -->
+      <path d="M62 138 C52 118 36 120 28 132"
+            stroke="currentColor" stroke-width="9"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </svg></span>`
+
   };
+
   return icons[type] || `<span class="${cls}" aria-hidden="true">?</span>`;
 }
 
+// Beat count label for each note type
+const beatLabel = {
+  whole: '4', half: '2', dotted_half: '3',
+  quarter: '1', dotted_quarter: '1½', eighth: '½',
+  eighth_front: '½', eighth_mid: '½', eighth_back: '½',
+  rest_h: '2', rest_q: '1', rest_e: '½'
+};
+
+const posLabel = {
+  eighth_front: 'depan',
+  eighth_mid: 'tengah',
+  eighth_back: 'blkg'
+};
+
 function hydrateNoteButtons() {
   document.querySelectorAll('.note-btn').forEach((btn) => {
-    // Try data-type first, then fall back to onclick parsing
     let type = btn.getAttribute('data-type');
     if (!type) {
       const onclickValue = btn.getAttribute('onclick') || '';
@@ -851,7 +976,12 @@ function hydrateNoteButtons() {
       if (match) type = match[1];
     }
     if (!type) return;
-    btn.innerHTML = getNoteIconMarkup(type, 'sym');
+    const iconHTML = getNoteIconMarkup(type, 'sym');
+    const label = beatLabel[type] || '';
+    const pos   = posLabel[type]  || '';
+    btn.innerHTML = iconHTML
+      + (label ? `<span class="beat-count">${label}</span>` : '')
+      + (pos   ? `<span class="pos-label">${pos}</span>` : '');
   });
 }
 
