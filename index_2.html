@@ -318,9 +318,9 @@ body::before {
   display: inline-flex;
   align-items: flex-end;
   justify-content: center;
-  min-height: 58px;
-  margin-top: 18px;
-  margin-bottom: -12px;
+  min-height: 55px;
+  margin-top: 22px;
+  margin-bottom: -20px;
   z-index: 1;
   overflow: visible;
 }
@@ -337,7 +337,7 @@ body::before {
   font-weight: 900;
   color: #2D160E;
   line-height: 1;
-  margin-top: -2px;
+  margin-top: -5px;
   text-align: center;
   font-family: 'Nunito', sans-serif;
   letter-spacing: 0.01em;
@@ -372,8 +372,10 @@ body::before {
 .note-icon.smufl-wrap {
   position: relative;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  width: 42px;
+  overflow: visible;
 }
 
 .note-icon.smufl-wrap .smufl-glyph {
@@ -383,29 +385,30 @@ body::before {
 
 .note-icon.smufl-wrap .smufl-dot {
   position: absolute;
-  right: -3px;
-  top: 50%;
-  transform: translateY(-8%);
-  font-family: 'Bravura', serif;
-  font-size: 24px;
-  line-height: 1;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 5px;
+  top: 68%;
+  transform: translateY(-50%);
 }
 
 .nb-whole .note-icon.smufl-glyph {
   font-size: 48px;
-  transform: translateY(6px);
+  transform: translateY(10px);
 }
 
 .nb-half .note-icon.smufl-glyph,
 .nb-quarter .note-icon.smufl-glyph,
 .nb-eighth .note-icon.smufl-glyph {
   font-size: 54px;
-  transform: translateY(6px);
+  transform: translateY(10px);
 }
 
 .nb-dotted-half .note-icon.smufl-wrap,
 .nb-dotq .note-icon.smufl-wrap {
-  transform: translate(0, 6px);
+  transform: translate(0, 10px);
 }
 
 .nb-dotted-half .note-icon.smufl-wrap .smufl-glyph,
@@ -415,8 +418,10 @@ body::before {
 
 .nb-dotted-half .note-icon.smufl-wrap .smufl-dot,
 .nb-dotq .note-icon.smufl-wrap .smufl-dot {
-  right: -1px;
-  transform: translateY(-12%);
+  width: 7px;
+  height: 7px;
+  right: 7px;
+  top: 68%;
 }
 
 .nb-rest-h .note-icon.smufl-glyph,
@@ -428,7 +433,7 @@ body::before {
 .nb-rest-h .note-icon,
 .nb-rest-q .note-icon,
 .nb-rest-e .note-icon {
-  transform: translateY(6px);
+  transform: translateY(10px);
 }
 
 .nb-rest-h .note-icon.smufl-glyph {
@@ -446,8 +451,8 @@ body::before {
 .nb-eighth-front .note-icon,
 .nb-eighth-mid .note-icon,
 .nb-eighth-back .note-icon {
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   transform: translateY(6px);
 }
 
@@ -557,15 +562,15 @@ body::before {
   }
 
   .note-btn .sym {
-    min-height: 56px;
-    margin-top: 18px;
-    margin-bottom: -12px;
+    min-height: 53px;
+    margin-top: 22px;
+    margin-bottom: -20px;
   }
 
   .beat-count {
     font-size: 12px;
     min-height: 22px;
-    margin-top: -2px;
+    margin-top: -5px;
   }
 
   .note-icon {
@@ -576,8 +581,8 @@ body::before {
   .nb-eighth-front .note-icon,
   .nb-eighth-mid .note-icon,
   .nb-eighth-back .note-icon {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
   }
 }
 
@@ -736,17 +741,23 @@ body::before {
 }
 
 .note-cell .cell-sym .note-icon.smufl-wrap {
-  width: 28px;
+  width: 32px;
   height: 28px;
+  transform: translateY(2px);
 }
 
 .note-cell .cell-sym .note-icon.smufl-wrap .smufl-glyph {
-  font-size: 40px;
+  font-size: 43px;
 }
 
 .note-cell .cell-sym .note-icon.smufl-wrap .smufl-dot {
-  right: -7px;
-  font-size: 20px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 5px;
+  top: 66%;
+  transform: translateY(-50%);
 }
 
 .note-cell .cell-sym .note-icon.smufl-glyph.note-whole-glyph {
@@ -757,11 +768,24 @@ body::before {
 .note-cell .cell-sym .note-icon.smufl-glyph.note-quarter-glyph,
 .note-cell .cell-sym .note-icon.smufl-glyph.note-eighth-glyph {
   font-size: 43px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-half-glyph,
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-quarter-glyph {
+  width: 34px;
 }
 
 .note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-half-glyph .smufl-glyph,
 .note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-quarter-glyph .smufl-glyph {
   font-size: 43px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .beam-glyph {
+  width: 32px;
+  height: 32px;
+  transform: translateY(2px);
 }
 
 .note-cell .cell-sym .note-icon.smufl-glyph.rest-half-glyph {
@@ -1103,33 +1127,33 @@ function getNoteIconMarkup(type, extraClass = '') {
 
     half: `<span class="${cls} smufl-glyph note-half-glyph" aria-hidden="true">&#xE1D3;</span>`,
 
-    dotted_half: `<span class="${cls} smufl-wrap note-dotted-half-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D3;</span><span class="smufl-dot">&#xE1E7;</span></span>`,
+    dotted_half: `<span class="${cls} smufl-wrap note-dotted-half-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D3;</span><span class="smufl-dot"></span></span>`,
 
     quarter: `<span class="${cls} smufl-glyph note-quarter-glyph" aria-hidden="true">&#xE1D5;</span>`,
 
-    dotted_quarter: `<span class="${cls} smufl-wrap note-dotted-quarter-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D5;</span><span class="smufl-dot">&#xE1E7;</span></span>`,
+    dotted_quarter: `<span class="${cls} smufl-wrap note-dotted-quarter-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D5;</span><span class="smufl-dot"></span></span>`,
 
     eighth: `<span class="${cls} smufl-glyph note-eighth-glyph" aria-hidden="true">&#xE1D7;</span>`,
 
     // ── QUAVER POSISI DEPAN (beam left-hanging → note is FIRST in group) ─────
-    eighth_front: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="38" cy="127" rx="25" ry="17" transform="rotate(-20 38 127)" fill="currentColor"/>
-      <rect x="59" y="34" width="7" height="96" rx="3.5" fill="currentColor"/>
-      <polygon points="63,36 104,30 104,42 63,48" fill="currentColor"/>
+    eighth_front: `<span class="${cls} beam-glyph beam-front-glyph" aria-hidden="true"><svg viewBox="0 0 86 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="28" cy="112" rx="30" ry="20" transform="rotate(-18 28 112)" fill="currentColor"/>
+      <rect x="52" y="20" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="56,22 84,18 84,30 56,36" fill="currentColor"/>
     </svg></span>`,
 
     // ── QUAVER POSISI TENGAH (beams both sides → note is MIDDLE in group) ────
-    eighth_mid: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 140 170" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="50" cy="127" rx="25" ry="17" transform="rotate(-20 50 127)" fill="currentColor"/>
-      <rect x="71" y="34" width="7" height="96" rx="3.5" fill="currentColor"/>
-      <polygon points="20,42 120,28 120,40 20,54" fill="currentColor"/>
+    eighth_mid: `<span class="${cls} beam-glyph beam-mid-glyph" aria-hidden="true"><svg viewBox="0 0 100 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="34" cy="112" rx="30" ry="20" transform="rotate(-18 34 112)" fill="currentColor"/>
+      <rect x="58" y="20" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="8,34 94,22 94,34 8,46" fill="currentColor"/>
     </svg></span>`,
 
     // ── QUAVER POSISI BELAKANG (beam right-hanging → note is LAST in group) ──
-    eighth_back: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="58" cy="127" rx="25" ry="17" transform="rotate(-20 58 127)" fill="currentColor"/>
-      <rect x="79" y="34" width="7" height="96" rx="3.5" fill="currentColor"/>
-      <polygon points="24,50 83,42 83,30 24,38" fill="currentColor"/>
+    eighth_back: `<span class="${cls} beam-glyph beam-back-glyph" aria-hidden="true"><svg viewBox="0 0 86 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="112" rx="30" ry="20" transform="rotate(-18 40 112)" fill="currentColor"/>
+      <rect x="64" y="20" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="14,40 68,34 68,22 14,28" fill="currentColor"/>
     </svg></span>`,
 
     // ── HALF REST (minim rest) ────────────────────────────────────────────────
