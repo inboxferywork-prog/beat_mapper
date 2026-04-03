@@ -1,0 +1,1357 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Beat Mapper Ajaib!</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+@font-face {
+  font-family: 'Bravura';
+  src: url('./assets/fonts/Bravura.woff') format('woff'),
+       url('./assets/fonts/Bravura.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --pink:    #FF6B9D;
+  --orange:  #FF9F43;
+  --yellow:  #FFD93D;
+  --green:   #6BCB77;
+  --blue:    #4D96FF;
+  --purple:  #C77DFF;
+  --red:     #FF6B6B;
+  --teal:    #48CAE4;
+  --bg:      #FFF9F0;
+  --text:    #3D2B1F;
+  --muted:   #8B7B74;
+  --shadow:  rgba(61,43,31,0.12);
+  --neon-pink:   #FF4FB3;
+  --neon-orange: #FF8C2B;
+  --neon-yellow: #FFE44D;
+  --neon-lime:   #8DFF5B;
+  --neon-blue:   #39B8FF;
+  --neon-cyan:   #45F0FF;
+  --neon-violet: #C95CFF;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* no body scroll; all scroll inside outputContainer */
+}
+
+body {
+  font-family: 'Baloo 2', cursive;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  /* mobile: fill exactly the viewport */
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,107,157,0.07) 1px, transparent 1px),
+    radial-gradient(circle, rgba(77,150,255,0.05) 1px, transparent 1px);
+  background-size: 42px 42px, 65px 65px;
+  background-position: 0 0, 22px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ====== HEADER ====== */
+#header {
+  background: white;
+  z-index: 100;
+  padding: 8px 12px 6px;
+  box-shadow: 0 4px 18px var(--shadow);
+  border-bottom: 3px solid var(--yellow);
+  flex-shrink: 0;
+}
+
+#header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--pink), var(--orange), var(--yellow), var(--green), var(--blue), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: rainbowShift 4s ease-in-out infinite;
+}
+
+@keyframes rainbowShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ====== TRANSPORT ROW ====== */
+#transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.ts-select {
+  font-family: 'Baloo 2', cursive;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 50px;
+  border: 2px solid var(--purple);
+  background: #FAF0FF;
+  color: var(--purple);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ctrl-btn {
+  font-size: 17px;
+  font-weight: 800;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.18);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.ctrl-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.18); }
+
+#playBtn { background: var(--green);  color: white; }
+#stopBtn { background: var(--red);    color: white; }
+#undoBtn { background: var(--orange); color: white; font-size:15px; }
+
+#resetBtn {
+  font-family: 'Baloo 2', cursive;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 13px;
+  border-radius: 50px;
+  border: 2px solid var(--red);
+  background: white;
+  color: var(--red);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+#resetBtn:active { background: var(--red); color: white; transform: scale(0.95); }
+
+/* ====== TEMPO + TIMESIG ROW ====== */
+#tempoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.tempo-select {
+  font-family: 'Baloo 2', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 50px;
+  border: 2px solid var(--orange);
+  background: #FFF8F0;
+  color: var(--orange);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#tempoDisplay {
+  background: var(--yellow);
+  color: var(--text);
+  font-weight: 900;
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 30px;
+  min-width: 64px;
+  text-align: center;
+}
+
+/* ====== HORIZONTAL SCROLL NOTE BAR ====== */
+#noteBar {
+  position: relative;
+  z-index: 1;
+  padding: 8px 10px 6px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,249,240,0.96)),
+    radial-gradient(circle at top left, rgba(255,79,179,0.12), transparent 35%),
+    radial-gradient(circle at top right, rgba(57,184,255,0.12), transparent 35%);
+  flex-shrink: 0;
+}
+
+#noteBar::before,
+#noteBar::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 22px;
+  z-index: 2;
+  pointer-events: none;
+}
+#noteBar::before { left:  0; background: linear-gradient(to right, var(--bg), transparent); }
+#noteBar::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+
+.note-scroll-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 10px 20px 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  align-items: stretch;
+}
+.note-scroll-track::-webkit-scrollbar { display: none; }
+
+.note-help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 12px 4px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,242,194,0.92));
+  border: 2px solid rgba(255,217,61,0.7);
+  box-shadow: 0 6px 16px rgba(255,217,61,0.18);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  color: #6B5200;
+  text-align: center;
+}
+
+.note-help strong {
+  color: #FF4FB3;
+  font-weight: 900;
+}
+
+.scroll-divider {
+  width: 2px;
+  min-width: 2px;
+  height: 44px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.note-btn {
+  font-family: 'Baloo 2', cursive;
+  font-weight: 800;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: transform .12s, box-shadow .12s, filter .12s;
+  position: relative;
+  padding: 12px 10px 10px;
+  width: 118px;
+  min-width: 118px;
+  height: 146px;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  border: 3px solid rgba(255,255,255,0.78);
+  overflow: hidden;
+}
+.note-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.38), transparent 32%),
+    radial-gradient(circle at top center, rgba(255,255,255,0.28), transparent 48%);
+  pointer-events: none;
+}
+.note-btn:active {
+  transform: translateY(2px) scale(0.96);
+  filter: saturate(1.05);
+}
+
+.note-btn .sym {
+  line-height: 1;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 64px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.rhythm-guide {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #2D160E;
+  line-height: 1.1;
+  margin-top: auto;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.84);
+  box-shadow: inset 0 -2px 0 rgba(255,255,255,0.32);
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.rhythm-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.rhythm-text {
+  display: inline-block;
+}
+
+.note-icon {
+  width: 42px;
+  height: 42px;
+  display: block;
+  color: #1A1A1A; /* Always dark/black — not inherited from button color */
+}
+
+.note-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.note-icon.smufl-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bravura', serif;
+  font-size: 56px;
+  line-height: 1;
+}
+
+.note-icon.smufl-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  overflow: visible;
+}
+
+.note-icon.smufl-wrap .smufl-glyph {
+  font-family: 'Bravura', serif;
+  line-height: 1;
+}
+
+.note-icon.smufl-wrap .smufl-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 2px;
+  top: 52%;
+  transform: translateY(-50%);
+}
+
+.nb-whole .note-icon.smufl-glyph {
+  font-size: 48px;
+  transform: translateY(6px);
+}
+
+.nb-half .note-icon.smufl-glyph,
+.nb-quarter .note-icon.smufl-glyph {
+  font-size: 54px;
+  transform: translateY(6px);
+}
+
+.nb-rest-h .note-icon.smufl-glyph,
+.nb-rest-q .note-icon.smufl-glyph {
+  font-size: 48px;
+  transform: translateY(6px);
+}
+
+/* Force icon color to black on ALL colored note buttons */
+.note-btn .note-icon,
+.note-btn .sym .note-icon {
+  color: #1A1A1A !important;
+}
+
+/* Whole note & half note inner holes must match their button background */
+.nb-whole       { background: linear-gradient(180deg, #FF88CA, var(--neon-pink)); color: white; box-shadow: 0 6px 0 #D52C88, 0 10px 18px rgba(255,79,179,0.35); --notebg: var(--neon-pink); }
+.nb-half        { background: linear-gradient(180deg, #FFBA68, var(--neon-orange)); color: white; box-shadow: 0 6px 0 #D26800, 0 10px 18px rgba(255,140,43,0.34); --notebg: var(--neon-orange); }
+.nb-quarter     { background: linear-gradient(180deg, #A6FF84, var(--neon-lime)); color: #204300; box-shadow: 0 6px 0 #53AF1D, 0 10px 18px rgba(141,255,91,0.32); }
+.nb-rest-h      { background: linear-gradient(180deg, #F4F4F4, #CFCFCF); color: #3D2B1F; box-shadow: 0 6px 0 #9B9B9B, 0 10px 18px rgba(140,140,140,0.28); }
+.nb-rest-q      { background: linear-gradient(180deg, #ECECEC, #BBBBBB); color: #3D2B1F; box-shadow: 0 6px 0 #858585, 0 10px 18px rgba(120,120,120,0.26); }
+/* The inner "hole" ellipses of whole/half noteheads use the button's own bg color */
+.note-cell .notehead-hole { fill: white; }
+
+
+.note-btn:focus-visible,
+.ctrl-btn:focus-visible,
+#resetBtn:focus-visible,
+.ts-select:focus-visible,
+.tempo-select:focus-visible {
+  outline: 4px solid rgba(255,228,77,0.85);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .note-btn {
+    width: 108px;
+    min-width: 108px;
+    height: 138px;
+    padding: 10px 8px 10px;
+  }
+
+  .note-btn .sym {
+    min-height: 60px;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    flex: 0 0 auto;
+  }
+
+  .rhythm-guide {
+    font-size: 14px;
+    min-height: 32px;
+    padding: 6px 9px;
+    gap: 5px;
+  }
+
+  .rhythm-emoji {
+    font-size: 15px;
+  }
+
+  .note-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ====== OUTPUT AREA â€” fills remaining height ====== */
+#outputWrapper {
+  position: relative;
+  margin: 4px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 28px var(--shadow);
+  border: 3px solid rgba(0,0,0,0.05);
+  z-index: 1;
+  flex: 1;          /* grow to fill remaining vertical space */
+  min-height: 0;    /* critical for flex children to scroll properly */
+}
+
+#outputContainer {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: white;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+}
+
+#outputContainer::-webkit-scrollbar { width: 5px; }
+#outputContainer::-webkit-scrollbar-track { background: #f5f5f5; }
+#outputContainer::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
+
+/* COUNT IN OVERLAY */
+#countOverlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255,255,255,0.96);
+  z-index: 20;
+}
+
+#countNumber {
+  font-size: 90px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: countPop .2s ease;
+}
+@keyframes countPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+#countOverlay .count-sub {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 4px;
+}
+
+#output {
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+}
+
+/* EMPTY STATE */
+#emptyState {
+  padding: 40px 20px;
+  text-align: center;
+}
+#emptyState .empty-icon { margin: 0 auto 10px; animation: float 3s ease-in-out infinite; }
+.piano-icon { width: 72px; height: 72px; }
+.piano-icon svg { width: 100%; height: 100%; display: block; }
+#emptyState p { font-size: 16px; font-weight: 700; color: var(--muted); }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ====== BARS ====== */
+.bar {
+  padding: 10px 14px 8px;
+  border-bottom: 2px dashed #F0EBE3;
+}
+.bar:last-child { border-bottom: none; }
+
+.bar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.bar-pill {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color: white;
+}
+.bar-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, rgba(199,125,255,0.25), transparent);
+  border-radius: 2px;
+}
+
+.beat-row, .note-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+
+.beat-label {
+  width: 40px;
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.note-cell {
+  width: 40px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  position: relative;
+  transition: background .15s, box-shadow .15s;
+}
+.note-cell .cell-sym {
+  line-height: 1;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 34px;
+  height: 36px;
+}
+
+.note-cell .cell-sym .note-icon {
+  width: 34px;
+  height: 36px;
+  color: #4A3528;
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph {
+  width: 34px;
+  height: 36px;
+  font-size: 46px;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap {
+  width: 34px;
+  height: 36px;
+  transform: none;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap .smufl-glyph {
+  font-size: 46px;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap .smufl-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 2px;
+  top: 57%;
+  transform: translateY(-50%);
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.note-whole-glyph {
+  font-size: 39px;
+  transform: translateY(1px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.note-half-glyph,
+.note-cell .cell-sym .note-icon.smufl-glyph.note-quarter-glyph {
+  font-size: 46px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.rest-half-glyph,
+.note-cell .cell-sym .note-icon.smufl-glyph.rest-quarter-glyph {
+  font-size: 40px;
+  transform: translateY(1px);
+}
+
+.note-cell .cell-sym .output-note-glyph {
+  width: 34px;
+  height: 36px;
+  transform: translateY(1px);
+}
+
+.note-cell .cell-sym .output-note-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.note-cell .cell-sym.output-rest-glyph {
+  width: 34px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A3528;
+}
+
+.note-cell .cell-sym .beam-glyph {
+  width: 32px;
+  height: 34px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .beam-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Tie tail â€” horizontal line extending right from a tied note */
+.note-cell.has-tie-out::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  width: 12px;
+  height: 3px;
+  background: var(--muted);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+/* Note that is the TIE-CONTINUATION (second note of a tie) â€” dimmed slightly */
+.note-cell.is-tied-cont {
+  opacity: 0.55;
+}
+
+/* Active during playback */
+.note-cell.active-cell {
+  background: var(--yellow) !important;
+  box-shadow: 0 0 0 3px var(--orange), 0 4px 14px rgba(255,200,0,0.5) !important;
+  animation: activeGlow .25s ease forwards;
+}
+@keyframes activeGlow {
+  0%   { transform: scale(0.85); }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1.0); }
+}
+
+/* ====== SPARKLE ====== */
+@keyframes sparkleFly {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.4) translateY(-28px); }
+}
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 18px;
+  animation: sparkleFly .6s ease forwards;
+  z-index: 999;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<div id="header">
+  <h1>Beat Mapper Ajaib!</h1>
+
+  <div id="transport">
+    <button id="playBtn" class="ctrl-btn" onclick="startPlayback()" title="Main!">&#9654;</button>
+    <button id="stopBtn" class="ctrl-btn" onclick="stop()"          title="Stop">&#9632;</button>
+    <button id="undoBtn" class="ctrl-btn" onclick="undo()"          title="Hapus terakhir">&#x232B;</button>
+    <button id="resetBtn"                 onclick="resetAll()">Mulai Lagi</button>
+  </div>
+
+  <div id="tempoRow">
+    <select id="timeSig" onchange="render()" class="ts-select">
+      <option>4/4</option>
+      <option>3/4</option>
+      <option>2/4</option>
+    </select>
+    <select id="tempoSelect" onchange="updateTempo()" class="tempo-select">
+      <option value="45">Grave (?=45)</option>
+      <option value="56">Largo (?=56)</option>
+      <option value="63">Larghetto (?=63)</option>
+      <option value="69">Adagio (?=69)</option>
+      <option value="84">Andante (?=84)</option>
+      <option value="98">Andantino (?=98)</option>
+      <option value="108" selected>Moderato (?=108)</option>
+    </select>
+    <div id="tempoDisplay">108 BPM</div>
+  </div>
+</div>
+
+<!-- ====== HORIZONTAL SCROLL NOTE BAR ====== -->
+<div id="noteBar">
+  <div class="note-help"><strong>Versi beginner</strong> fokus pada semibreve, minim, crotchet, rest minim, dan rest crotchet.</div>
+  <div class="note-scroll-track" id="noteTrack">
+    <button class="note-btn nb-whole" data-type="whole" onclick="addNote('whole', this)" title="Not Penuh (Semibreve)"></button>
+    <button class="note-btn nb-half" data-type="half" onclick="addNote('half', this)" title="Not Setengah (Minim)"></button>
+    <button class="note-btn nb-quarter" data-type="quarter" onclick="addNote('quarter', this)" title="Not Seperempat (Crotchet)"></button>
+    <div class="scroll-divider"></div>
+    <button class="note-btn nb-rest-h" data-type="rest_h" onclick="addNote('rest_h', this)" title="Diam Setengah (Minim Rest)"></button>
+    <button class="note-btn nb-rest-q" data-type="rest_q" onclick="addNote('rest_q', this)" title="Diam Seperempat (Crotchet Rest)"></button>
+  </div>
+</div>
+
+<!-- ====== OUTPUT ====== -->
+<div id="outputWrapper">
+  <div id="outputContainer">
+    <div id="countOverlay">
+      <div id="countNumber">3</div>
+      <div class="count-sub">SIAP...</div>
+    </div>
+    <div id="output">
+      <div id="emptyState">
+        <div class="empty-icon piano-icon" aria-hidden="true"><svg viewBox="0 0 96 96" fill="none"><rect x="12" y="20" width="72" height="54" rx="10" fill="#FFF7E8" stroke="#FF9F43" stroke-width="4"/><rect x="20" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="30" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="40" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="50" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="60" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="27" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/><rect x="47" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/><rect x="57" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/></svg></div>
+        <p>Tekan not di atas untuk mulai!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* ============================================================
+   STATE
+============================================================ */
+let notes   = [];
+let grid    = [];
+let index   = 0;
+let playing = false;
+let tempo   = 108;
+let timer   = null;
+
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function ensureAudioReady() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+}
+
+function playInputFeedback(type) {
+  ensureAudioReady();
+
+  if (type.startsWith('rest_')) {
+    beep('rest_cue');
+    return;
+  }
+
+  const freqMap = {
+    whole: 440,
+    half: 620,
+    quarter: 880
+  };
+
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freqMap[type] || 880, now);
+  osc.frequency.linearRampToValueAtTime((freqMap[type] || 880) * 1.08, now + 0.09);
+
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.linearRampToValueAtTime(0.22, now + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.12);
+}
+
+/* ============================================================
+   TEMPO
+============================================================ */
+function updateTempo() {
+  const sel = document.getElementById('tempoSelect');
+  tempo = parseInt(sel.value, 10);
+  document.getElementById('tempoDisplay').innerText = tempo + ' BPM';
+}
+
+/* ============================================================
+   SPARKLE
+============================================================ */
+function spawnSparkle(btn) {
+  const r = btn.getBoundingClientRect();
+  const emojis = ['*', '+', 'o', '.'];
+  for (let i = 0; i < 3; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'sparkle';
+    sp.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    sp.style.left = (r.left + r.width / 2 + (Math.random() - 0.5) * 34) + 'px';
+    sp.style.top  = (r.top + r.height * Math.random() * 0.5) + 'px';
+    document.body.appendChild(sp);
+    setTimeout(() => sp.remove(), 700);
+  }
+}
+
+/* ============================================================
+   ADD / UNDO / RESET
+============================================================ */
+function addNote(n, source) {
+  playInputFeedback(n);
+  notes.push({ type: n });
+  const targetBtn = source && source.currentTarget ? source.currentTarget : source;
+  if (targetBtn && targetBtn.getBoundingClientRect) spawnSparkle(targetBtn);
+  render();
+  requestAnimationFrame(scrollToLastBar);
+}
+
+function undo() {
+  if (notes.length === 0) return;
+  notes.pop();
+  render();
+}
+
+function resetAll() {
+  notes   = [];
+  playing = false;
+  if (timer) { clearTimeout(timer); timer = null; }
+  index   = 0;
+  grid    = [];
+  document.getElementById('outputContainer').scrollTop = 0;
+  document.getElementById('output').innerHTML = `
+    <div id="emptyState">
+      ${getPianoIconMarkup()}
+      <p>Tekan not di atas untuk mulai!</p>
+    </div>`;
+}
+
+/* ============================================================
+   DURATION
+============================================================ */
+function getDur(n) {
+  return { whole: 8, half: 4, quarter: 2, rest_h: 4, rest_q: 2 }[n];
+}
+
+function getPianoIconMarkup() {
+  return `<div class="empty-icon piano-icon" aria-hidden="true"><svg viewBox="0 0 96 96" fill="none"><rect x="12" y="20" width="72" height="54" rx="10" fill="#FFF7E8" stroke="#FF9F43" stroke-width="4"/><rect x="20" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="30" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="40" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="50" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="60" y="28" width="10" height="38" rx="3" fill="#FFFFFF" stroke="#3D2B1F" stroke-width="2"/><rect x="27" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/><rect x="47" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/><rect x="57" y="28" width="8" height="22" rx="2" fill="#3D2B1F"/></svg></div>`;
+}
+
+/* ============================================================
+   COLORS & SYMBOLS
+============================================================ */
+const noteColor = {
+  whole: '#FF6B9D',
+  half: '#FF9F43',
+  quarter: '#6BCB77',
+  rest_h: '#BDBDBD',
+  rest_q: '#9F9F9F'
+};
+
+const NOTE_META = {
+  whole:   { guideEmoji: '\u270B', guideText: '1 2 3 4' },
+  half:    { guideEmoji: '\u270B', guideText: '1 2' },
+  quarter: { guideEmoji: '\u270B', guideText: '1' },
+  rest_h:  { guideEmoji: '\uD83E\uDD2B', guideText: '1 2' },
+  rest_q:  { guideEmoji: '\uD83E\uDD2B', guideText: '1' }
+};
+
+function getSlotsPerBar(ts) {
+  return ts === '3/4' ? 6 : ts === '2/4' ? 4 : 8;
+}
+
+function getGridLabel(ts, pos) {
+  return pos % 2 === 0 ? String(Math.floor(pos / 2) + 1) : '&';
+}
+
+function getNoteIconMarkup(type, extraClass = '') {
+  const cls = extraClass ? `note-icon ${extraClass}` : 'note-icon';
+  const isCellSym = extraClass.includes('cell-sym');
+
+  const outputIcons = {
+    whole: `<span class="${cls} output-note-glyph output-whole-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="44" cy="110" rx="25" ry="16" transform="rotate(-18 44 110)" fill="none" stroke="currentColor" stroke-width="6"/></svg></span>`,
+    half: `<span class="${cls} output-note-glyph output-half-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="none" stroke="currentColor" stroke-width="6"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/></svg></span>`,
+    quarter: `<span class="${cls} output-note-glyph output-quarter-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="currentColor"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/></svg></span>`,
+    rest_h: `<span class="${cls} output-note-glyph output-rest-half-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="44" width="64" height="6" rx="3" fill="currentColor"/><rect x="24" y="50" width="48" height="16" rx="3" fill="currentColor"/></svg></span>`,
+    rest_q: `<span class="${cls} output-note-glyph output-rest-quarter-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><path d="M55 20c-8 10-6 18 0 24 6 6 7 12 1 19-7 8-7 15 1 22 6 5 7 11-2 18l-8 7" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="58" cy="117" r="5" fill="currentColor"/></svg></span>`
+  };
+
+  const icons = outputIcons;
+
+  if (outputIcons[type]) return outputIcons[type];
+  return `<span class="${cls}" aria-hidden="true">?</span>`;
+}
+
+function hydrateNoteButtons() {
+  document.querySelectorAll('.note-btn').forEach((btn) => {
+    const type = btn.getAttribute('data-type');
+    if (!type) return;
+    const iconHTML = getNoteIconMarkup(type, 'sym');
+    const meta = NOTE_META[type] || {};
+    const guideHTML = meta.guideText
+      ? `<span class="rhythm-guide"><span class="rhythm-emoji" aria-hidden="true">${meta.guideEmoji || ''}</span><span class="rhythm-text">${meta.guideText}</span></span>`
+      : '';
+    btn.innerHTML = iconHTML + guideHTML;
+  });
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render() {
+  const ts = document.getElementById('timeSig').value;
+  const total = getSlotsPerBar(ts);
+
+  grid = [];
+
+  notes.forEach((n, ni) => {
+    const dur = getDur(n.type);
+    for (let j = 0; j < dur; j++) {
+      const pos = grid.length % total;
+      grid.push({
+        label: getGridLabel(ts, pos),
+        noteIndex: ni,
+        isMain: j === 0
+      });
+    }
+  });
+
+  draw();
+}
+
+/* ============================================================
+   DRAW
+============================================================ */
+function draw() {
+  const ts    = document.getElementById('timeSig').value;
+  const total = getSlotsPerBar(ts);
+  const out   = document.getElementById('output');
+
+  if (grid.length === 0) {
+    out.innerHTML = `
+      <div id="emptyState">
+        ${getPianoIconMarkup()}
+        <p>Tekan not di atas untuk mulai!</p>
+      </div>`;
+    return;
+  }
+
+  const activeNoteIndex = playing ? (grid[index]?.noteIndex ?? -1) : -1;
+
+  let html = '';
+  for (let i = 0; i < grid.length; i += total) {
+    const barIndex = i / total;
+    html += `<div class="bar" id="bar-${barIndex}">`;
+    html += `<div class="bar-header">
+               <div class="bar-pill">Bar ${barIndex + 1}</div>
+               <div class="bar-line"></div>
+             </div>`;
+
+    html += '<div class="beat-row">';
+    for (let j = 0; j < total; j++) {
+      const g = grid[i + j];
+      html += `<div class="beat-label">${g?.isMain ? g.label : ''}</div>`;
+    }
+    html += '</div>';
+
+    html += '<div class="note-row">';
+    for (let j = 0; j < total; j++) {
+      const g = grid[i + j];
+      if (g?.isMain) {
+        const n = notes[g.noteIndex];
+        const sym = getNoteIconMarkup(n.type, 'cell-sym');
+        const col = noteColor[n.type];
+        const isActive = g.noteIndex === activeNoteIndex;
+        const bg  = isActive ? 'var(--yellow)' : col + '30';
+        const bdr = isActive ? 'var(--orange)' : col;
+        const cls = isActive ? 'note-cell active-cell' : 'note-cell';
+
+        html += `<div class="${cls}" style="background:${bg};border:2px solid ${bdr};">
+                   ${sym}
+                 </div>`;
+      } else {
+        html += '<div class="note-cell"></div>';
+      }
+    }
+    html += '</div></div>';
+  }
+
+  out.innerHTML = html;
+}
+
+/* ============================================================
+   SCROLL
+============================================================ */
+function scrollBarIntoView(barIndex) {
+  const container = document.getElementById('outputContainer');
+  const bars = document.querySelectorAll('.bar');
+  const bar = bars[barIndex];
+  if (!container || !bar) return;
+  const maxScrollTop = Math.max(container.scrollHeight - container.clientHeight, 0);
+  const targetTop = Math.min(Math.max(bar.offsetTop - 8, 0), maxScrollTop);
+  container.scrollTo({ top: targetTop, behavior: 'smooth' });
+}
+
+function scrollToLastBar() {
+  const bars = document.querySelectorAll('.bar');
+  if (bars.length === 0) return;
+  scrollBarIntoView(bars.length - 1);
+}
+
+function scrollToActiveBar() {
+  const ts = document.getElementById('timeSig').value;
+  const total = getSlotsPerBar(ts);
+  const barIndex = Math.floor(index / total);
+  scrollBarIntoView(barIndex);
+}
+
+/* ============================================================
+   AUDIO ENGINE
+============================================================ */
+function beep(type) {
+  const METRONOME_GAIN_BOOST = 1.8;
+
+  if (type === 'bar_start') {
+    const now = audioCtx.currentTime;
+
+    const pulseA = audioCtx.createOscillator();
+    const pulseAGain = audioCtx.createGain();
+    pulseA.type = 'square';
+    pulseA.frequency.setValueAtTime(820, now);
+    pulseA.frequency.exponentialRampToValueAtTime(620, now + 0.05);
+    pulseAGain.gain.setValueAtTime(Math.min(0.34 * METRONOME_GAIN_BOOST, 0.8), now);
+    pulseAGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    pulseA.connect(pulseAGain);
+    pulseAGain.connect(audioCtx.destination);
+    pulseA.start(now);
+    pulseA.stop(now + 0.05);
+
+    const pulseB = audioCtx.createOscillator();
+    const pulseBGain = audioCtx.createGain();
+    pulseB.type = 'triangle';
+    pulseB.frequency.setValueAtTime(2100, now + 0.045);
+    pulseB.frequency.exponentialRampToValueAtTime(1350, now + 0.12);
+    pulseBGain.gain.setValueAtTime(Math.min(0.42 * METRONOME_GAIN_BOOST, 0.85), now + 0.045);
+    pulseBGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    pulseB.connect(pulseBGain);
+    pulseBGain.connect(audioCtx.destination);
+    pulseB.start(now + 0.045);
+    pulseB.stop(now + 0.12);
+    return;
+  }
+
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.connect(g);
+  g.connect(audioCtx.destination);
+  const now = audioCtx.currentTime;
+  let freq = 960;
+  let dur = 0.07;
+  let gain = 0.3;
+  let endFreq = null;
+
+  switch (type) {
+    case 'downbeat':
+      freq = 1350; dur = 0.08; gain = 0.42;
+      break;
+    case 'strong':
+      freq = 960; dur = 0.07; gain = 0.3;
+      break;
+    case 'weak':
+      freq = 680; dur = 0.05; gain = 0.2;
+      break;
+    case 'rest_cue':
+      freq = 2200; dur = 0.04; gain = 0.16;
+      o.type = 'sine';
+      break;
+    case 'go':
+      freq = 1200; endFreq = 1900; dur = 0.15; gain = 0.35;
+      break;
+  }
+
+  if (endFreq) {
+    o.frequency.setValueAtTime(freq, now);
+    o.frequency.linearRampToValueAtTime(endFreq, now + dur);
+  } else {
+    o.frequency.value = freq;
+  }
+
+  g.gain.setValueAtTime(Math.min(gain * METRONOME_GAIN_BOOST, 0.85), now);
+  g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+  o.start(now);
+  o.stop(now + dur);
+}
+
+/* ============================================================
+   COUNT-IN RULES
+============================================================ */
+function countIn(cb) {
+  const overlay = document.getElementById('countOverlay');
+  const numEl = document.getElementById('countNumber');
+  const ts = document.getElementById('timeSig').value;
+  let steps = [];
+
+  if (ts === '4/4') {
+    steps = [
+      { text: '1',  dur: 1,   sound: 'downbeat' },
+      { text: '2',  dur: 1,   sound: 'strong' },
+      { text: '3',  dur: 1,   sound: 'strong' },
+      { text: 'GO', dur: 1,   sound: 'go' }
+    ];
+  } else if (ts === '3/4') {
+    steps = [
+      { text: '1',  dur: 1,   sound: 'downbeat' },
+      { text: '2',  dur: 1,   sound: 'strong' },
+      { text: '3',  dur: 1,   sound: 'strong' },
+      { text: '1',  dur: 1,   sound: 'downbeat' },
+      { text: '2',  dur: 1,   sound: 'strong' },
+      { text: 'GO', dur: 1,   sound: 'go' }
+    ];
+  } else {
+    steps = [
+      { text: '1',  dur: 1,   sound: 'downbeat' },
+      { text: '2',  dur: 1,   sound: 'strong' },
+      { text: '1',  dur: 0.5, sound: 'downbeat' },
+      { text: '&',  dur: 0.5, sound: 'weak' },
+      { text: '2',  dur: 0.5, sound: 'strong' },
+      { text: 'GO', dur: 0.5, sound: 'go' }
+    ];
+  }
+
+  let i = 0;
+  overlay.style.display = 'flex';
+
+  function step() {
+    if (i >= steps.length) {
+      overlay.style.display = 'none';
+      cb();
+      return;
+    }
+
+    const s = steps[i];
+    numEl.innerText = s.text;
+    numEl.style.animation = 'none';
+    void numEl.offsetHeight;
+    numEl.style.animation = '';
+    beep(s.sound);
+    setTimeout(step, (60 / tempo) * 1000 * s.dur);
+    i++;
+  }
+
+  step();
+}
+
+/* ============================================================
+   PLAYBACK ENGINE
+============================================================ */
+function getClickType(g) {
+  const ts = document.getElementById('timeSig').value;
+  const lbl = g.label;
+  const noteType = notes[g.noteIndex]?.type;
+
+  if (noteType && noteType.startsWith('rest_')) return 'rest_cue';
+
+  if (ts === '4/4') {
+    if (lbl === '1') return 'bar_start';
+    if (lbl === '&') return 'weak';
+    return 'strong';
+  }
+
+  if (ts === '3/4') {
+    if (lbl === '1') return 'bar_start';
+    if (lbl === '&') return 'weak';
+    return 'strong';
+  }
+
+  if (lbl === '1') return 'bar_start';
+  if (lbl === '&') return 'weak';
+  return 'strong';
+}
+
+function startPlayback() {
+  if (grid.length === 0) {
+    alert('Tambahkan dulu notnya ya!');
+    return;
+  }
+  document.getElementById('outputContainer').scrollTop = 0;
+  audioCtx.resume();
+  setTimeout(() => countIn(play), 200);
+}
+
+function play() {
+  playing = false;
+  if (timer) { clearTimeout(timer); timer = null; }
+  playing = true;
+  index = 0;
+
+  function step() {
+    if (!playing) return;
+
+    const g = grid[index];
+    if (g?.isMain) {
+      const clickType = getClickType(g);
+      if (clickType) beep(clickType);
+    }
+
+    draw();
+    scrollToActiveBar();
+
+    index++;
+    if (index >= grid.length) {
+      index = 0;
+      document.getElementById('outputContainer').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    timer = setTimeout(step, (60 / tempo) / 2 * 1000);
+  }
+
+  step();
+}
+
+function stop() {
+  playing = false;
+  if (timer) { clearTimeout(timer); timer = null; }
+  draw();
+}
+
+hydrateNoteButtons();
+render();
+updateTempo();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
