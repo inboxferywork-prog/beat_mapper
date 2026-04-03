@@ -316,11 +316,11 @@ body::before {
 .note-btn .sym {
   line-height: 1;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  min-height: 52px;
-  margin-top: 16px;
-  margin-bottom: -4px;
+  min-height: 58px;
+  margin-top: 18px;
+  margin-bottom: -12px;
   z-index: 1;
   overflow: visible;
 }
@@ -337,7 +337,7 @@ body::before {
   font-weight: 900;
   color: #2D160E;
   line-height: 1;
-  margin-top: 1px;
+  margin-top: -2px;
   text-align: center;
   font-family: 'Nunito', sans-serif;
   letter-spacing: 0.01em;
@@ -383,34 +383,40 @@ body::before {
 
 .note-icon.smufl-wrap .smufl-dot {
   position: absolute;
-  right: -10px;
+  right: -3px;
   top: 50%;
-  transform: translateY(-18%);
+  transform: translateY(-8%);
   font-family: 'Bravura', serif;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1;
 }
 
 .nb-whole .note-icon.smufl-glyph {
   font-size: 48px;
-  transform: translateY(0);
+  transform: translateY(6px);
 }
 
 .nb-half .note-icon.smufl-glyph,
 .nb-quarter .note-icon.smufl-glyph,
 .nb-eighth .note-icon.smufl-glyph {
   font-size: 54px;
-  transform: translateY(0);
+  transform: translateY(6px);
 }
 
 .nb-dotted-half .note-icon.smufl-wrap,
 .nb-dotq .note-icon.smufl-wrap {
-  transform: translateX(-3px);
+  transform: translate(0, 6px);
 }
 
 .nb-dotted-half .note-icon.smufl-wrap .smufl-glyph,
 .nb-dotq .note-icon.smufl-wrap .smufl-glyph {
   font-size: 54px;
+}
+
+.nb-dotted-half .note-icon.smufl-wrap .smufl-dot,
+.nb-dotq .note-icon.smufl-wrap .smufl-dot {
+  right: -1px;
+  transform: translateY(-12%);
 }
 
 .nb-rest-h .note-icon.smufl-glyph,
@@ -422,7 +428,7 @@ body::before {
 .nb-rest-h .note-icon,
 .nb-rest-q .note-icon,
 .nb-rest-e .note-icon {
-  transform: translateY(0);
+  transform: translateY(6px);
 }
 
 .nb-rest-h .note-icon.smufl-glyph {
@@ -435,6 +441,14 @@ body::before {
 
 .nb-rest-e .note-icon.smufl-glyph {
   font-size: 54px;
+}
+
+.nb-eighth-front .note-icon,
+.nb-eighth-mid .note-icon,
+.nb-eighth-back .note-icon {
+  width: 46px;
+  height: 46px;
+  transform: translateY(6px);
 }
 
 /* Force icon color to black on ALL colored note buttons */
@@ -542,7 +556,32 @@ body::before {
     padding: 12px 7px 8px;
   }
 
-  /* ====== OUTPUT AREA â€” fills remaining height ====== */
+  .note-btn .sym {
+    min-height: 56px;
+    margin-top: 18px;
+    margin-bottom: -12px;
+  }
+
+  .beat-count {
+    font-size: 12px;
+    min-height: 22px;
+    margin-top: -2px;
+  }
+
+  .note-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nb-eighth-front .note-icon,
+  .nb-eighth-mid .note-icon,
+  .nb-eighth-back .note-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ====== OUTPUT AREA â€” fills remaining height ====== */
 #outputWrapper {
   position: relative;
   margin: 4px 10px calc(10px + env(safe-area-inset-bottom, 0px));
@@ -1512,6 +1551,7 @@ hydrateNoteButtons();
 </script>
 </body>
 </html>
+
 
 
 
