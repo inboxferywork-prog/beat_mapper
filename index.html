@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
+
+@font-face {
+  font-family: 'Bravura';
+  src: url('./assets/fonts/Bravura.woff') format('woff'),
+       url('./assets/fonts/Bravura.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --pink:    #FF6B9D;
@@ -21,6 +30,13 @@
   --text:    #3D2B1F;
   --muted:   #8B7B74;
   --shadow:  rgba(61,43,31,0.12);
+  --neon-pink:   #FF4FB3;
+  --neon-orange: #FF8C2B;
+  --neon-yellow: #FFE44D;
+  --neon-lime:   #8DFF5B;
+  --neon-blue:   #39B8FF;
+  --neon-cyan:   #45F0FF;
+  --neon-violet: #C95CFF;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -197,8 +213,11 @@ body::before {
 #noteBar {
   position: relative;
   z-index: 1;
-  padding: 6px 0 4px;
-  background: var(--bg);
+  padding: 8px 10px 6px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,249,240,0.96)),
+    radial-gradient(circle at top left, rgba(255,79,179,0.12), transparent 35%),
+    radial-gradient(circle at top right, rgba(57,184,255,0.12), transparent 35%);
   flex-shrink: 0;
 }
 
@@ -216,15 +235,38 @@ body::before {
 
 .note-scroll-track {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
   overflow-y: visible;
-  padding: 8px 20px 12px;
+  padding: 10px 20px 14px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  align-items: center;
+  align-items: stretch;
 }
 .note-scroll-track::-webkit-scrollbar { display: none; }
+
+.note-help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 12px 4px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,242,194,0.92));
+  border: 2px solid rgba(255,217,61,0.7);
+  box-shadow: 0 6px 16px rgba(255,217,61,0.18);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  color: #6B5200;
+  text-align: center;
+}
+
+.note-help strong {
+  color: #FF4FB3;
+  font-weight: 900;
+}
 
 .scroll-divider {
   width: 2px;
@@ -239,54 +281,76 @@ body::before {
   font-family: 'Baloo 2', cursive;
   font-weight: 800;
   border: none;
-  border-radius: 15px;
+  border-radius: 22px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  transition: transform .12s, box-shadow .12s;
+  justify-content: flex-start;
+  transition: transform .12s, box-shadow .12s, filter .12s;
   position: relative;
-  padding: 6px 8px 5px;
-  width: 62px;
-  height: 66px;
+  padding: 10px 8px 8px;
+  width: 92px;
+  min-width: 92px;
+  height: 118px;
   flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  border: 3px solid rgba(255,255,255,0.78);
+  overflow: hidden;
 }
-.note-btn:active { transform: translateY(2px) scale(0.95); }
+.note-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.38), transparent 32%),
+    radial-gradient(circle at top center, rgba(255,255,255,0.28), transparent 48%);
+  pointer-events: none;
+}
+.note-btn:active {
+  transform: translateY(2px) scale(0.96);
+  filter: saturate(1.05);
+}
 
 .note-btn .sym {
   line-height: 1;
   display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 60px;
+  margin-top: 12px;
+  margin-bottom: -4px;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+/* Beat count shown below the music symbol */
+.beat-count {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-}
-
-/* Beat count number shown below the music symbol */
-.beat-count {
-  display: block;
-  font-size: 13px;
+  min-height: 26px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 15px;
   font-weight: 900;
-  color: white;
+  color: #2D160E;
   line-height: 1;
-  margin-top: 2px;
+  margin-top: 0;
   text-align: center;
   font-family: 'Nunito', sans-serif;
-  letter-spacing: 0;
-}
-
-/* dotted-half button has dark text, override beat-count color */
-.nb-dotted-half .beat-count {
-  color: #5A4700;
+  letter-spacing: 0.01em;
+  background: rgba(255,255,255,0.84);
+  box-shadow: inset 0 -2px 0 rgba(255,255,255,0.32);
+  z-index: 1;
 }
 
 .note-icon {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   display: block;
-  color: #1A1A1A; /* Always dark/black — not inherited from button color */
+  color: #1A1A1A; /* Always dark/black � not inherited from button color */
 }
 
 .note-icon svg {
@@ -294,6 +358,112 @@ body::before {
   height: 100%;
   display: block;
   overflow: visible;
+}
+
+.note-icon.smufl-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bravura', serif;
+  font-size: 56px;
+  line-height: 1;
+}
+
+.note-icon.smufl-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  overflow: visible;
+}
+
+.note-icon.smufl-wrap .smufl-glyph {
+  font-family: 'Bravura', serif;
+  line-height: 1;
+}
+
+.note-icon.smufl-wrap .smufl-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 2px;
+  top: 52%;
+  transform: translateY(-50%);
+}
+
+.nb-whole .note-icon.smufl-glyph {
+  font-size: 48px;
+  transform: translateY(6px);
+}
+
+.nb-half .note-icon.smufl-glyph,
+.nb-quarter .note-icon.smufl-glyph,
+.nb-eighth .note-icon.smufl-glyph {
+  font-size: 54px;
+  transform: translateY(6px);
+}
+
+.nb-dotted-half .note-icon.smufl-wrap,
+.nb-dotq .note-icon.smufl-wrap {
+  transform: translate(-2px, 6px);
+}
+
+.nb-dotted-half .note-icon.smufl-wrap .smufl-glyph,
+.nb-dotq .note-icon.smufl-wrap .smufl-glyph {
+  font-size: 54px;
+}
+
+.nb-dotted-half .note-icon.smufl-wrap .smufl-dot,
+.nb-dotq .note-icon.smufl-wrap .smufl-dot {
+  width: 6px;
+  height: 6px;
+  right: 1px;
+  top: 52%;
+}
+
+.nb-rest-h .note-icon.smufl-glyph,
+.nb-rest-q .note-icon.smufl-glyph,
+.nb-rest-e .note-icon.smufl-glyph {
+  color: #2A2A2A !important;
+}
+
+.nb-rest-h .note-icon,
+.nb-rest-q .note-icon,
+.nb-rest-e .note-icon {
+  transform: translateY(2px);
+}
+
+.nb-rest-h .note-icon.smufl-glyph {
+  font-size: 46px;
+}
+
+.nb-rest-q .note-icon.smufl-glyph {
+  font-size: 52px;
+}
+
+.nb-rest-e .note-icon.smufl-glyph {
+  font-size: 54px;
+}
+
+.nb-eighth-front .note-icon {
+  width: 38px;
+  height: 38px;
+  transform: translateY(0);
+}
+
+.nb-eighth-mid .note-icon {
+  width: 38px;
+  height: 38px;
+  transform: translateY(1px);
+}
+
+.nb-eighth-back .note-icon {
+  width: 38px;
+  height: 38px;
+  transform: translateY(1px);
 }
 
 /* Force icon color to black on ALL colored note buttons */
@@ -310,18 +480,18 @@ body::before {
 }
 
 /* Whole note & half note inner holes must match their button background */
-.nb-whole       { background: #FF6B9D; color: white; box-shadow: 0 4px 0 #C94578; --notebg: #FF6B9D; }
-.nb-half        { background: #FF9F43; color: white; box-shadow: 0 4px 0 #C87320; --notebg: #FF9F43; }
-.nb-dotted-half { background: #FFD93D; color: #6B5600; box-shadow: 0 4px 0 #C8A800; --notebg: #FFD93D; }
-.nb-quarter     { background: #6BCB77; color: white; box-shadow: 0 4px 0 #3A9445; }
-.nb-dotq        { background: #4D96FF; color: white; box-shadow: 0 4px 0 #1A63CC; }
-.nb-eighth      { background: #9B4DCA; color: white; box-shadow: 0 4px 0 #6A1E99; }
-.nb-rest-h      { background: #C8C8C8; color: #444;  box-shadow: 0 4px 0 #999; }
-.nb-rest-q      { background: #B8B8B8; color: #444;  box-shadow: 0 4px 0 #888; }
-.nb-rest-e      { background: #A8A8A8; color: #444;  box-shadow: 0 4px 0 #777; }
-.nb-eighth-front { background: #00B4D8; color: white; box-shadow: 0 4px 0 #0077A8; }
-.nb-eighth-mid   { background: #52B788; color: white; box-shadow: 0 4px 0 #2D7A58; }
-.nb-eighth-back  { background: #F4845F; color: white; box-shadow: 0 4px 0 #C45530; }
+.nb-whole       { background: linear-gradient(180deg, #FF88CA, var(--neon-pink)); color: white; box-shadow: 0 6px 0 #D52C88, 0 10px 18px rgba(255,79,179,0.35); --notebg: var(--neon-pink); }
+.nb-half        { background: linear-gradient(180deg, #FFBA68, var(--neon-orange)); color: white; box-shadow: 0 6px 0 #D26800, 0 10px 18px rgba(255,140,43,0.34); --notebg: var(--neon-orange); }
+.nb-dotted-half { background: linear-gradient(180deg, #FFF07D, var(--neon-yellow)); color: #5F4800; box-shadow: 0 6px 0 #C8A400, 0 10px 18px rgba(255,228,77,0.34); --notebg: var(--neon-yellow); }
+.nb-quarter     { background: linear-gradient(180deg, #A6FF84, var(--neon-lime)); color: #204300; box-shadow: 0 6px 0 #53AF1D, 0 10px 18px rgba(141,255,91,0.32); }
+.nb-dotq        { background: linear-gradient(180deg, #7BC8FF, var(--neon-blue)); color: white; box-shadow: 0 6px 0 #157FD6, 0 10px 18px rgba(57,184,255,0.34); }
+.nb-eighth      { background: linear-gradient(180deg, #E08EFF, var(--neon-violet)); color: white; box-shadow: 0 6px 0 #8E28D6, 0 10px 18px rgba(201,92,255,0.36); }
+.nb-rest-h      { background: linear-gradient(180deg, #F7F7F7, #CFCFCF); color: #3F3F3F; box-shadow: 0 6px 0 #989898, 0 10px 18px rgba(160,160,160,0.28); }
+.nb-rest-q      { background: linear-gradient(180deg, #EFEFEF, #BCBCBC); color: #3F3F3F; box-shadow: 0 6px 0 #858585, 0 10px 18px rgba(150,150,150,0.28); }
+.nb-rest-e      { background: linear-gradient(180deg, #E7E7E7, #ABABAB); color: #3F3F3F; box-shadow: 0 6px 0 #767676, 0 10px 18px rgba(140,140,140,0.28); }
+.nb-eighth-front { background: linear-gradient(180deg, #80F6FF, var(--neon-cyan)); color: #003F4A; box-shadow: 0 6px 0 #00A6B4, 0 10px 18px rgba(69,240,255,0.35); }
+.nb-eighth-mid   { background: linear-gradient(180deg, #8DFFC9, #37D986); color: #0F4D2A; box-shadow: 0 6px 0 #1E9558, 0 10px 18px rgba(55,217,134,0.35); }
+.nb-eighth-back  { background: linear-gradient(180deg, #FFB08B, #FF7C4A); color: white; box-shadow: 0 6px 0 #CF4D18, 0 10px 18px rgba(255,124,74,0.35); }
 
 /* The inner "hole" ellipses of whole/half noteheads use the button's own bg color */
 .nb-whole .notehead-hole,
@@ -331,54 +501,114 @@ body::before {
 /* In output cells, hole color = white (cells have light tinted bg) */
 .note-cell .notehead-hole { fill: white; }
 
-/* quaver variant label colors — beat-count CSS handles the text */
+/* quaver variant label colors � beat-count CSS handles the text */
 .nb-eighth-front .beat-count,
 .nb-eighth-mid .beat-count,
 .nb-eighth-back .beat-count {
-  color: rgba(255,255,255,0.92);
+  color: #1A1A1A;
 }
 
 .nb-eighth-front .note-icon,
 .nb-eighth-mid .note-icon,
 .nb-eighth-back .note-icon {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
 }
 
 /* Position sub-label (depan/tengah/blkg) under quaver variants */
 .pos-label {
   display: block;
-  font-size: 7.5px;
+  font-size: 10px;
   font-weight: 800;
-  color: rgba(255,255,255,0.80);
+  color: rgba(255,255,255,0.92);
   line-height: 1;
-  margin-top: 1px;
+  margin-top: 3px;
   text-align: center;
   font-family: 'Nunito', sans-serif;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  z-index: 1;
 }
 
 #tieBtn {
   font-family: 'Baloo 2', cursive;
   font-weight: 800;
-  font-size: 12px;
-  padding: 7px 13px;
-  border-radius: 15px;
-  border: 2px solid var(--teal);
-  background: white;
-  color: var(--teal);
+  font-size: 16px;
+  padding: 12px 16px;
+  min-height: 64px;
+  border-radius: 20px;
+  border: 3px solid var(--teal);
+  background: linear-gradient(180deg, white, #EFFFFC);
+  color: #008CA6;
   cursor: pointer;
   transition: all .2s;
   flex-shrink: 0;
   white-space: nowrap;
-  box-shadow: 0 4px 0 rgba(72,202,228,0.4);
+  box-shadow: 0 6px 0 rgba(72,202,228,0.4);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-#tieBtn.active { background: var(--teal); color: white; }
+#tieBtn.active {
+  background: linear-gradient(180deg, #8EF3FF, var(--teal));
+  color: white;
+}
 #tieBtn:active { transform: translateY(1px); }
 
-/* ====== OUTPUT AREA â€” fills remaining height ====== */
+.note-btn:focus-visible,
+#tieBtn:focus-visible,
+.ctrl-btn:focus-visible,
+#resetBtn:focus-visible,
+.ts-select:focus-visible,
+.tempo-select:focus-visible {
+  outline: 4px solid rgba(255,228,77,0.85);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .note-btn {
+    width: 84px;
+    min-width: 84px;
+    height: 110px;
+    padding: 9px 7px 8px;
+  }
+
+  .note-btn .sym {
+    min-height: 56px;
+    margin-top: 10px;
+    margin-bottom: -4px;
+    flex: 0 0 auto;
+  }
+
+  .beat-count {
+    font-size: 14px;
+    min-height: 24px;
+    margin-top: 0;
+  }
+
+  .note-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nb-eighth-front .note-icon {
+    width: 36px;
+    height: 36px;
+    transform: translateY(0);
+  }
+
+  .nb-eighth-mid .note-icon {
+    width: 36px;
+    height: 36px;
+    transform: translateY(1px);
+  }
+
+  .nb-eighth-back .note-icon {
+    width: 36px;
+    height: 36px;
+    transform: translateY(1px);
+  }
+}
+
+/* ====== OUTPUT AREA — fills remaining height ====== */
 #outputWrapper {
   position: relative;
   margin: 4px 10px calc(10px + env(safe-area-inset-bottom, 0px));
@@ -516,17 +746,143 @@ body::before {
 .note-cell .cell-sym {
   line-height: 1;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  width: 34px;
+  height: 36px;
 }
 
 .note-cell .cell-sym .note-icon {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 36px;
   color: #4A3528;
 }
 
-/* Tie tail â€” horizontal line extending right from a tied note */
+.note-cell .cell-sym .note-icon.smufl-glyph {
+  width: 34px;
+  height: 36px;
+  font-size: 46px;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap {
+  width: 34px;
+  height: 36px;
+  transform: none;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap .smufl-glyph {
+  font-size: 46px;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap .smufl-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  right: 2px;
+  top: 57%;
+  transform: translateY(-50%);
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.note-whole-glyph {
+  font-size: 39px;
+  transform: translateY(1px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.note-half-glyph,
+.note-cell .cell-sym .note-icon.smufl-glyph.note-quarter-glyph,
+.note-cell .cell-sym .note-icon.smufl-glyph.note-eighth-glyph {
+  font-size: 46px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-half-glyph,
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-quarter-glyph {
+  width: 34px;
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-half-glyph .smufl-glyph,
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-quarter-glyph .smufl-glyph {
+  font-size: 46px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-half-glyph .smufl-dot,
+.note-cell .cell-sym .note-icon.smufl-wrap.note-dotted-quarter-glyph .smufl-dot {
+  right: 0;
+  top: 58%;
+}
+
+.note-cell .cell-sym .output-note-glyph {
+  width: 34px;
+  height: 36px;
+  transform: translateY(1px);
+}
+
+.note-cell .cell-sym .output-note-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.note-cell .cell-sym.output-rest-glyph {
+  width: 34px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4A3528;
+}
+
+.note-cell .cell-sym.output-rest-quarter-glyph,
+.note-cell .cell-sym.output-rest-eighth-glyph {
+  font-family: 'Bravura', serif;
+  font-size: 49px;
+  line-height: 1;
+}
+
+.note-cell .cell-sym.output-rest-quarter-glyph {
+  font-size: 40px;
+  transform: translateY(5px);
+}
+
+.note-cell .cell-sym.output-rest-eighth-glyph {
+  font-size: 46px;
+  transform: translateY(4px);
+}
+
+.note-cell .cell-sym.output-rest-half-glyph {
+  transform: translateY(3px);
+}
+
+.note-cell .cell-sym .beam-glyph {
+  width: 32px;
+  height: 34px;
+  transform: translateY(2px);
+}
+
+.note-cell .cell-sym .beam-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.rest-half-glyph {
+  font-size: 36px;
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.rest-quarter-glyph {
+  font-size: 44px;
+}
+
+.note-cell .cell-sym .note-icon.smufl-glyph.rest-eighth-glyph {
+  font-size: 45px;
+}
+
+/* Tie tail — horizontal line extending right from a tied note */
 .note-cell.has-tie-out::after {
   content: '';
   position: absolute;
@@ -539,7 +895,7 @@ body::before {
   transform: translateY(-50%);
 }
 
-/* Note that is the TIE-CONTINUATION (second note of a tie) â€” dimmed slightly */
+/* Note that is the TIE-CONTINUATION (second note of a tie) — dimmed slightly */
 .note-cell.is-tied-cont {
   opacity: 0.55;
 }
@@ -593,16 +949,16 @@ body::before {
       <option>2/2</option>
     </select>
     <select id="tempoSelect" onchange="updateTempo()" class="tempo-select">
-      <option value="45">Grave (♩=45)</option>
-      <option value="56">Largo (♩=56)</option>
-      <option value="63">Larghetto (♩=63)</option>
-      <option value="69">Adagio (♩=69)</option>
-      <option value="84">Andante (♩=84)</option>
-      <option value="98">Andantino (♩=98)</option>
-      <option value="108">Moderato (♩=108)</option>
-      <option value="120" selected>Allegretto (♩=120)</option>
-      <option value="138">Allegro (♩=138)</option>
-      <option value="160">Vivace (♩=160)</option>
+      <option value="45">Grave (?=45)</option>
+      <option value="56">Largo (?=56)</option>
+      <option value="63">Larghetto (?=63)</option>
+      <option value="69">Adagio (?=69)</option>
+      <option value="84">Andante (?=84)</option>
+      <option value="98">Andantino (?=98)</option>
+      <option value="108">Moderato (?=108)</option>
+      <option value="120" selected>Allegretto (?=120)</option>
+      <option value="138">Allegro (?=138)</option>
+      <option value="160">Vivace (?=160)</option>
     </select>
     <div id="tempoDisplay">120 BPM</div>
   </div>
@@ -610,6 +966,7 @@ body::before {
 
 <!-- ====== HORIZONTAL SCROLL NOTE BAR ====== -->
 <div id="noteBar">
+  <div class="note-help"><strong>Lihat buku musikmu</strong> lalu pilih simbol yang sama satu per satu.</div>
   <div class="note-scroll-track" id="noteTrack">
 
     <button class="note-btn nb-whole"        data-type="whole"          onclick="addNote('whole', this)"         title="Not Penuh (Semibreve)"></button>
@@ -809,163 +1166,105 @@ const noteColor = {
   eighth_front:'#00B4D8', eighth_mid:'#52B788', eighth_back:'#F4845F',
   rest_h:'#C8C8C8', rest_q:'#B8B8B8', rest_e:'#A8A8A8'
 };
+
+const NOTE_META = {
+  whole:          { beat: '4' },
+  dotted_half:    { beat: '3' },
+  half:           { beat: '2' },
+  dotted_quarter: { beat: '1 1/2' },
+  quarter:        { beat: '1' },
+  eighth:         { beat: '1/2' },
+  eighth_front:   { beat: '1/2' },
+  eighth_mid:     { beat: '1/2' },
+  eighth_back:    { beat: '1/2' },
+  rest_h:         { beat: '2' },
+  rest_q:         { beat: '1' },
+  rest_e:         { beat: '1/2' }
+};
+
+function getSlotsPerBar(ts) {
+  return ts === '6/8' ? 6 : ts === '3/4' ? 6 : ts === '2/4' ? 4 : ts === '2/2' ? 8 : 8;
+}
+
+function getGridLabel(ts, pos) {
+  if (ts === '6/8') {
+    const beat = Math.floor(pos / 3) + 1;
+    const sub  = pos % 3;
+    return sub === 0 ? String(beat) : sub === 1 ? 'la' : 'li';
+  }
+  return pos % 2 === 0 ? String(Math.floor(pos / 2) + 1) : '&';
+}
+
 function getNoteIconMarkup(type, extraClass = '') {
   const cls = extraClass ? `note-icon ${extraClass}` : 'note-icon';
+  const isCellSym = extraClass.includes('cell-sym');
 
   // All SVG paths below are carefully modeled after standard music engraving
-  // conventions (SMuFL / Bravura reference), drawn in a 100×140 viewBox for
+  // conventions (SMuFL / Bravura reference), drawn in a 100�140 viewBox for
   // consistent proportions, then scaled by the CSS .note-icon size.
+
+  const outputIcons = {
+    whole: `<span class="${cls} output-note-glyph output-whole-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="44" cy="110" rx="25" ry="16" transform="rotate(-18 44 110)" fill="none" stroke="currentColor" stroke-width="6"/></svg></span>`,
+    half: `<span class="${cls} output-note-glyph output-half-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="none" stroke="currentColor" stroke-width="6"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/></svg></span>`,
+    dotted_half: `<span class="${cls} output-note-glyph output-dotted-half-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="none" stroke="currentColor" stroke-width="6"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/><circle cx="74" cy="110" r="5.5" fill="currentColor"/></svg></span>`,
+    quarter: `<span class="${cls} output-note-glyph output-quarter-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="currentColor"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/></svg></span>`,
+    dotted_quarter: `<span class="${cls} output-note-glyph output-dotted-quarter-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="currentColor"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/><circle cx="74" cy="110" r="5.5" fill="currentColor"/></svg></span>`,
+    eighth: `<span class="${cls} output-note-glyph output-eighth-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="currentColor"/><rect x="51" y="18" width="7" height="88" rx="3.5" fill="currentColor"/><path d="M54 20 C70 24 76 36 74 50 C72 61 66 67 61 73" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span>`,
+    eighth_front: `<span class="${cls} output-note-glyph output-beam-glyph output-beam-front" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="28" cy="110" rx="25" ry="16" transform="rotate(-18 28 110)" fill="currentColor"/><rect x="51" y="28" width="7" height="78" rx="3.5" fill="currentColor"/><polygon points="55,31 82,27 82,38 55,43" fill="currentColor"/></svg></span>`,
+    eighth_mid: `<span class="${cls} output-note-glyph output-beam-glyph output-beam-mid" aria-hidden="true"><svg viewBox="0 0 108 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="110" rx="25" ry="16" transform="rotate(-18 30 110)" fill="currentColor"/><rect x="53" y="28" width="7" height="78" rx="3.5" fill="currentColor"/><polygon points="8,39 95,27 95,38 8,50" fill="currentColor"/></svg></span>`,
+    eighth_back: `<span class="${cls} output-note-glyph output-beam-glyph output-beam-back" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><ellipse cx="41" cy="110" rx="25" ry="16" transform="rotate(-18 41 110)" fill="currentColor"/><rect x="64" y="28" width="7" height="78" rx="3.5" fill="currentColor"/><polygon points="15,43 68,37 68,26 15,32" fill="currentColor"/></svg></span>`,
+    rest_h: `<span class="${cls} output-note-glyph output-rest-glyph output-rest-half-glyph" aria-hidden="true"><svg viewBox="0 0 96 142" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="50" width="64" height="6" rx="3" fill="currentColor"/><rect x="26" y="56" width="44" height="18" rx="2.5" fill="currentColor"/></svg></span>`,
+    rest_q: `<span class="${cls} output-rest-glyph output-rest-quarter-glyph" aria-hidden="true">&#xE4E5;</span>`,
+    rest_e: `<span class="${cls} output-rest-glyph output-rest-eighth-glyph" aria-hidden="true">&#xE4E6;</span>`
+  };
 
   const icons = {
 
-    // ── WHOLE NOTE (semibreve) ────────────────────────────────────────────────
-    // Hollow oval tilted ~-15°, thick outer ring, open centre hole
-    whole: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="50" cy="44" rx="30" ry="18" transform="rotate(-12 50 44)"
-               fill="currentColor"/>
-      <ellipse cx="50" cy="44" rx="16" ry="8"  transform="rotate(-12 50 44)"
-               class="notehead-hole" fill="white"/>
+    // -- STANDARD NOTE GLYPHS (Bravura / SMuFL) -------------------------------
+    whole: `<span class="${cls} smufl-glyph note-whole-glyph" aria-hidden="true">&#xE1D2;</span>`,
+
+    half: `<span class="${cls} smufl-glyph note-half-glyph" aria-hidden="true">&#xE1D3;</span>`,
+
+    dotted_half: `<span class="${cls} smufl-wrap note-dotted-half-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D3;</span><span class="smufl-dot"></span></span>`,
+
+    quarter: `<span class="${cls} smufl-glyph note-quarter-glyph" aria-hidden="true">&#xE1D5;</span>`,
+
+    dotted_quarter: `<span class="${cls} smufl-wrap note-dotted-quarter-glyph" aria-hidden="true"><span class="smufl-glyph">&#xE1D5;</span><span class="smufl-dot"></span></span>`,
+
+    eighth: `<span class="${cls} smufl-glyph note-eighth-glyph" aria-hidden="true">&#xE1D7;</span>`,
+
+    eighth_front: `<span class="${cls} beam-glyph beam-front-glyph" aria-hidden="true"><svg viewBox="0 0 86 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="28" cy="96" rx="30" ry="20" transform="rotate(-18 28 96)" fill="currentColor"/>
+      <rect x="52" y="4" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="56,6 84,2 84,14 56,20" fill="currentColor"/>
     </svg></span>`,
 
-    // ── HALF NOTE (minim) ─────────────────────────────────────────────────────
-    // Hollow oval notehead + stem up on right
-    half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="42" cy="120" rx="28" ry="18" transform="rotate(-18 42 120)"
-               fill="currentColor"/>
-      <ellipse cx="42" cy="120" rx="16" ry="9"  transform="rotate(-18 42 120)"
-               class="notehead-hole" fill="white"/>
-      <rect x="67" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
+    eighth_mid: `<span class="${cls} beam-glyph beam-mid-glyph" aria-hidden="true"><svg viewBox="0 0 100 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="34" cy="96" rx="30" ry="20" transform="rotate(-18 34 96)" fill="currentColor"/>
+      <rect x="58" y="4" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="8,18 94,6 94,18 8,30" fill="currentColor"/>
     </svg></span>`,
 
-    // ── DOTTED HALF NOTE ──────────────────────────────────────────────────────
-    dotted_half: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="40" cy="120" rx="28" ry="18" transform="rotate(-18 40 120)"
-               fill="currentColor"/>
-      <ellipse cx="40" cy="120" rx="16" ry="9"  transform="rotate(-18 40 120)"
-               class="notehead-hole" fill="white"/>
-      <rect x="65" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
-      <circle cx="100" cy="116" r="7" fill="currentColor"/>
+    eighth_back: `<span class="${cls} beam-glyph beam-back-glyph" aria-hidden="true"><svg viewBox="0 0 86 142" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="96" rx="30" ry="20" transform="rotate(-18 40 96)" fill="currentColor"/>
+      <rect x="64" y="4" width="7" height="94" rx="3.5" fill="currentColor"/>
+      <polygon points="14,24 68,18 68,6 14,12" fill="currentColor"/>
     </svg></span>`,
 
-    // ── QUARTER NOTE (crotchet) ───────────────────────────────────────────────
-    // Solid oval notehead + stem up
-    quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="42" cy="120" rx="28" ry="18" transform="rotate(-18 42 120)"
-               fill="currentColor"/>
-      <rect x="67" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
+    rest_h: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
+      <rect x="18" y="28" width="84" height="5" rx="2.5" fill="currentColor"/>
+      <rect x="28" y="33" width="64" height="20" rx="2" fill="currentColor"/>
     </svg></span>`,
 
-    // ── DOTTED QUARTER NOTE ───────────────────────────────────────────────────
-    dotted_quarter: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="40" cy="120" rx="28" ry="18" transform="rotate(-18 40 120)"
-               fill="currentColor"/>
-      <rect x="65" y="20" width="6.5" height="104" rx="3" fill="currentColor"/>
-      <circle cx="100" cy="116" r="7" fill="currentColor"/>
-    </svg></span>`,
+    rest_q: `<span class="${cls} smufl-glyph rest-quarter-glyph" aria-hidden="true">&#xE4E5;</span>`,
 
-    // ── EIGHTH NOTE (quaver) — single, with flag ──────────────────────────────
-    // Solid notehead + stem + elegant curved flag
-    eighth: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="40" cy="122" rx="27" ry="17" transform="rotate(-18 40 122)"
-               fill="currentColor"/>
-      <rect x="64" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
-      <!-- flag: starts at top of stem, curves down-right like a real quaver flag -->
-      <path d="M67 22 C90 35 95 55 78 75 C72 82 66 84 64 88
-               C72 74 78 60 70 42 C66 33 67 27 67 22 Z"
-            fill="currentColor"/>
-    </svg></span>`,
-
-    // ── QUAVER POSISI DEPAN (beam left-hanging → note is FIRST in group) ─────
-    // Notehead + stem + horizontal beam extending RIGHT from stem top
-    eighth_front: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 110 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="40" cy="122" rx="27" ry="17" transform="rotate(-18 40 122)"
-               fill="currentColor"/>
-      <rect x="64" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
-      <!-- beam extending right from stem top -->
-      <rect x="64" y="20" width="46" height="10" rx="3" fill="currentColor"/>
-    </svg></span>`,
-
-    // ── QUAVER POSISI TENGAH (beams both sides → note is MIDDLE in group) ────
-    eighth_mid: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="50" cy="122" rx="27" ry="17" transform="rotate(-18 50 122)"
-               fill="currentColor"/>
-      <rect x="74" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
-      <!-- beam extending left AND right -->
-      <rect x="20" y="20" width="90" height="10" rx="3" fill="currentColor"/>
-    </svg></span>`,
-
-    // ── QUAVER POSISI BELAKANG (beam right-hanging → note is LAST in group) ──
-    eighth_back: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 110 160" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="52" cy="122" rx="27" ry="17" transform="rotate(-18 52 122)"
-               fill="currentColor"/>
-      <rect x="76" y="20" width="6.5" height="106" rx="3" fill="currentColor"/>
-      <!-- beam extending left from stem top -->
-      <rect x="20" y="20" width="56" height="10" rx="3" fill="currentColor"/>
-    </svg></span>`,
-
-    // ── HALF REST (minim rest) ────────────────────────────────────────────────
-    // Solid black rectangle sitting ON TOP of a staff line (like a hat brim up)
-    rest_h: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-      <rect x="12" y="22" width="76" height="24" rx="2" fill="currentColor"/>
-      <rect x="8"  y="46" width="84" height="5"  rx="2" fill="currentColor"/>
-    </svg></span>`,
-
-    // ── QUARTER REST (crotchet rest) ──────────────────────────────────────────
-    // The classic filled squiggle/zigzag — modeled precisely after engraving standard:
-    // tapers at top, widens into a diamond, narrows again, ends with a C-shaped hook
-    rest_q: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 80 160" xmlns="http://www.w3.org/2000/svg">
-      <path d="
-        M46 8
-        C52 8  58 14 54 22
-        C51 28 44 30 40 34
-        C50 36 62 44 58 56
-        C55 64 46 67 42 71
-        C48 75 54 83 50 93
-        C46 103 34 110 24 106
-        C16 103 14 95 18 89
-        C22 84 30 85 33 91
-        C35 96 40 97 43 93
-        C46 89 43 82 38 77
-        C30 70 24 60 28 50
-        C31 41 42 38 48 34
-        C40 30 30 24 33 14
-        C36 6  42 6  46 8 Z
-      " fill="currentColor"/>
-    </svg></span>`,
-
-    // ── EIGHTH REST (quaver rest) ─────────────────────────────────────────────
-    // Filled circle (flag-ball) at top, diagonal thick stem going down-right,
-    // with a small curved hook/foot — standard engraving shape
-    rest_e: `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 80 160" xmlns="http://www.w3.org/2000/svg">
-      <!-- filled ball at top-left -->
-      <circle cx="28" cy="30" r="16" fill="currentColor"/>
-      <!-- diagonal stem: thick line from ball area down to bottom-right -->
-      <path d="M38 20 L62 138" stroke="currentColor" stroke-width="10"
-            stroke-linecap="round"/>
-      <!-- curved hook/foot at bottom -->
-      <path d="M62 138 C52 118 36 120 28 132"
-            stroke="currentColor" stroke-width="9"
-            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    </svg></span>`
+    rest_e: `<span class="${cls} smufl-glyph rest-eighth-glyph" aria-hidden="true">&#xE4E6;</span>`
 
   };
 
+  if (isCellSym && outputIcons[type]) return outputIcons[type];
   return icons[type] || `<span class="${cls}" aria-hidden="true">?</span>`;
 }
-
-// Beat count label for each note type
-const beatLabel = {
-  whole: '4', half: '2', dotted_half: '3',
-  quarter: '1', dotted_quarter: '1½', eighth: '½',
-  eighth_front: '½', eighth_mid: '½', eighth_back: '½',
-  rest_h: '2', rest_q: '1', rest_e: '½'
-};
-
-const posLabel = {
-  eighth_front: 'depan',
-  eighth_mid: 'tengah',
-  eighth_back: 'blkg'
-};
 
 function hydrateNoteButtons() {
   document.querySelectorAll('.note-btn').forEach((btn) => {
@@ -977,50 +1276,32 @@ function hydrateNoteButtons() {
     }
     if (!type) return;
     const iconHTML = getNoteIconMarkup(type, 'sym');
-    const label = beatLabel[type] || '';
-    const pos   = posLabel[type]  || '';
+    const meta = NOTE_META[type] || {};
+    const beat = meta.beat || '';
     btn.innerHTML = iconHTML
-      + (label ? `<span class="beat-count">${label}</span>` : '')
-      + (pos   ? `<span class="pos-label">${pos}</span>` : '');
+      + (beat ? `<span class="beat-count">${beat}</span>` : '');
   });
 }
 
 /* ============================================================
-   RENDER â€” build grid with tie awareness
+   RENDER — build grid with tie awareness
    For 2/2: display as 4/4-feel (8 slots per bar) but keep
    time-sig logic internally unchanged.
 ============================================================ */
 function render() {
   const ts = document.getElementById('timeSig').value;
-
-  // display slots per bar
-  // 2/2 shows 8 sub-slots (4 beats Ã— 2) like 4/4, but internally 4 slots
-  const total = ts==='6/8'?6 : ts==='3/4'?6 : ts==='2/4'?4 : ts==='2/2'?8 : 8;
+  const total = getSlotsPerBar(ts);
 
   grid = [];
 
   notes.forEach((n, ni) => {
     const dur = getDur(n.type);
-    // For 2/2 each "eighth" slot = 1 unit, half note = 4 units, whole = 8
-    // getDur already returns eighths; for 2/2 we double so half=4, whole=8 â†’ fills 8-slot bar correctly
-    // Actually getDur for half=4, which fills 4 of 8 slots (= 2 beats in cut time) âœ“
     const isTied = n.tieNext;    // this note ties INTO the next
     const prevTied = (ni > 0) && notes[ni-1].tieNext; // this note IS the continuation
 
     for (let j = 0; j < dur; j++) {
       const pos = grid.length % total;
-      let label;
-
-      if (ts === '6/8') {
-        const beat = Math.floor(pos / 3) + 1;  // 1 or 2
-        const sub  = pos % 3;                   // 0,1,2
-        label = sub===0 ? String(beat) : sub===1 ? 'la' : 'li';
-      } else if (ts === '2/2') {
-        // Show 4/4-feel: 1 & 2 & 3 & 4 &
-        label = pos%2===0 ? (Math.floor(pos/2)+1) : '&';
-      } else {
-        label = pos%2===0 ? (Math.floor(pos/2)+1) : '&';
-      }
+      const label = getGridLabel(ts, pos);
 
       grid.push({
         label,
@@ -1040,7 +1321,7 @@ function render() {
 ============================================================ */
 function draw() {
   const ts    = document.getElementById('timeSig').value;
-  const total = ts==='6/8'?6 : ts==='3/4'?6 : ts==='2/4'?4 : ts==='2/2'?8 : 8;
+  const total = getSlotsPerBar(ts);
   const out   = document.getElementById('output');
 
   if (grid.length === 0) {
@@ -1125,7 +1406,7 @@ function scrollToLastBar() {
 
 function scrollToActiveBar() {
   const ts    = document.getElementById('timeSig').value;
-  const total = ts==='6/8'?6 : ts==='3/4'?6 : ts==='2/4'?4 : ts==='2/2'?8 : 8;
+  const total = getSlotsPerBar(ts);
   const barIndex = Math.floor(index / total);
   scrollBarIntoView(barIndex);
 }
@@ -1133,11 +1414,11 @@ function scrollToActiveBar() {
 /* ============================================================
    AUDIO ENGINE
    Frequencies:
-     downbeat  (beat 1)          : 1500 Hz  â€” TING! highest
-     strong    (beat 2,3,4)      : 900 Hz   â€” tik medium
-     weak      (&)               : 550 Hz   â€” ti soft
-     rest_cue                    : 2200 Hz  short blip â€” distinct from others
-     go        (count-in cue)    : sweep 1200â†’1900
+     downbeat  (beat 1)          : 1500 Hz  — TING! highest
+     strong    (beat 2,3,4)      : 900 Hz   — tik medium
+     weak      (&)               : 550 Hz   — ti soft
+     rest_cue                    : 2200 Hz  short blip — distinct from others
+     go        (count-in cue)    : sweep 1200→1900
 
    Duration of click sound:
      downbeat: 0.08s  (sharp)
@@ -1219,11 +1500,11 @@ function beep(type) {
 }
 /* ============================================================
    COUNT-IN RULES (per spec):
-   4/4 : 1 2 3 GO          â€” all 1 beat
-   3/4 : 1 2 3 | 1 2 GO    â€” all 1 beat
-   2/4 : 1 2 | 1 & 2 GO    â€” 1,2=1beat; 1,&,2,GO=0.5beat
-   6/8 : 1 2 | 1 2 3 4 5 GO â€” 1,2=1.5beat; rest=0.5beat
-   2/2 : 1 2 | 1 GO         â€” all 2 beats
+   4/4 : 1 2 3 GO          — all 1 beat
+   3/4 : 1 2 3 | 1 2 GO    — all 1 beat
+   2/4 : 1 2 | 1 & 2 GO    — 1,2=1beat; 1,&,2,GO=0.5beat
+   6/8 : 1 2 | 1 2 3 4 5 GO — 1,2=1.5beat; rest=0.5beat
+   2/2 : 1 2 | 1 GO         — all 2 beats
 ============================================================ */
 function countIn(cb) {
   const overlay = document.getElementById('countOverlay');
@@ -1298,7 +1579,7 @@ function countIn(cb) {
    6/8 : beat 1(la/li)=downbeat/weak/weaker, beat 2(la/li)=strong/weak/weaker
    2/2 : beat 1=downbeat, beat 2=strong (based on 2/2 feel, not subdivided)
    REST notes: play rest_cue instead of normal click (on isMain only)
-   TIE continuation: silence â€” NO click at all
+   TIE continuation: silence — NO click at all
 ============================================================ */
 function getClickType(g) {
   // g = grid cell at current index
@@ -1338,7 +1619,7 @@ function getClickType(g) {
 }
 
 function startPlayback() {
-  if (grid.length === 0) { alert('Tambahkan dulu notnya ya! ðŸŽµ'); return; }
+  if (grid.length === 0) { alert('Tambahkan dulu notnya ya! 🎵'); return; }
   document.getElementById('outputContainer').scrollTop = 0;
   audioCtx.resume();
   setTimeout(() => countIn(play), 200);
@@ -1384,6 +1665,29 @@ hydrateNoteButtons();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
